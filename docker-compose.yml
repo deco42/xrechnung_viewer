@@ -1,0 +1,17 @@
+services:
+  xrechnung-viewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${XR_PORT:-4242}:${XR_PORT:-4242}"
+    restart: unless-stopped
+    environment:
+      PYTHONUNBUFFERED: "1"
+      XR_PORT: "${XR_PORT:-4242}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:${XR_PORT:-4242}/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

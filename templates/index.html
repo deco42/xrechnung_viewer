@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XRechnung Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>XRechnung Viewer</h1>
+        <p class="subtitle">Visualisierung von XRechnung XML-Dateien</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="language">Sprache</label>
+                <select id="language">
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button id="openNewTab" class="btn-primary" disabled>
+                    In neuem Tab öffnen
+                </button>
+            </div>
+            <div class="control-group">
+                <button id="savePdf" class="btn-success" {% if not has_fop %}style="display:none" {% endif %} disabled>
+                    Als PDF speichern
+                </button>
+                <button id="printPdf" class="btn-success" {% if not has_fop %}style="display:none" {% endif %} disabled>
+                    Drucken
+                </button>
+            </div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <span>Verarbeite...</span>
+            </div>
+        </div>
+
+        {% if not has_fop %}
+        <p class="pdf-notice">Apache FOP nicht verfügbar - PDF-Export deaktiviert</p>
+        {% endif %}
+
+        <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-icon">📥</div>
+            <div class="drop-zone-text">
+                XRechnung XML-Datei hier ablegen
+            </div>
+            <div class="drop-zone-hint">
+                oder <span class="browse-btn" onclick="document.getElementById('fileInput').click()">Datei
+                    auswählen</span>
+            </div>
+            <input type="file" id="fileInput" class="file-input" accept=".xml">
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <iframe id="preview" class="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        window.HAS_FOP = {{ 'true' if has_fop else 'false' }};
+    </script>
+</body>
+
+</html>
